@@ -1,0 +1,25 @@
+# 디자인 생성 기록
+
+- 생성 도구: 내장 image_gen 도구
+- 최초 시안: roopang-concept-v1.png
+- 최종 시안: roopang-concept-v2.png
+- 사용자 선택: 커피 한 잔 등 금액 달성 표시
+- 검토: PC/모바일 구성, 한글 문구, 주요 버튼, 시급과 경과 시간 계산, 오늘 합계 기준 커피 잔여 금액 확인.
+- 현재 결과는 정적 디자인 시안. 실제 애니메이션·접근성 대비·반응형 동작 검증은 구현 단계에서 진행.
+
+## 최초 생성 프롬프트
+
+Use case: ui-mockup
+Asset type: High fidelity responsive Korean web app design presentation, desktop and mobile.
+Create a polished, exceptionally well-designed UI concept board for a playful Korean salary idle-time tracker named "월급루팡". This is a tiny functional consumer utility, not a marketing landing page. Make a wide 3:2 image approximately 2400x1600 with a large desktop app on the left and a complete tall mobile app on the right, both flat front-facing UI, no perspective and no physical laptop/phone. Pale neutral gray presentation background, tidy labels "DESKTOP" and "MOBILE" outside interfaces at top.
+Design language: playful modern Korean independent web product, near-white ivory surfaces, true charcoal text, single bright spring green accent, fine charcoal outlines in selected areas, generous negative space, minimal rounded corners 20px on primary surfaces, strong typography with bold modern Korean sans and beautiful big tabular numerals. No gradients, no purple, no 3D rendering, no oversized marketing navigation, no excessive cards.
+Both interfaces show the same active tracking state and same numbers. Design the app as if it is ready for real implementation. Top compact brand header "월급루팡" with a very simple charming black mask logomark. Small link "내 기록". Main title "잠깐 쉬어도," then "월급은 흐르니까." in big black typography, left aligned on desktop. To its right on desktop, a whimsical small original flat illustration: an off-white round blob office thief with a black eye mask, green necktie, reclining against a green coin jar. Clean thick charcoal line illustration, not raccoon, not an existing IP. On mobile the tiny mascot sits next to the heading, leaving room for the timer.
+Primary timer panel: pale slightly-green white flat panel with a thin outline. Top small status with meaningful green dot and exact Korean "루팡 중". Then small label "이번에 루팡한 금액". Huge black tabular monetary number "₩ 1,250.00". Underneath "00:05:00" and small muted "1초에 4.17원씩 쌓이는 중". This is mathematically correct for hourly wage 15000 KRW and 5 minutes. Tiny green plus coin graphic beside number to imply counter motion; not an extra block of text.
+Below within panel, one clean wage control labeled "내 시급" value "15,000" unit "원". Then a wide bright green button with a small simple briefcase icon and exact label "일 시작". Button is the dominant action, black text. Mobile CTA full width and comfortable touch size. Beneath button tiny muted text "시급과 기록은 이 브라우저에 저장돼요".
+Below timer on desktop, airy monthly record section with horizontal heading "9월의 루팡 기록", month controls subtle left/right chevrons. Monthly total "₩ 42,850" with label "이번 달". A restrained single row of thirty tiny square calendar activity cells, green only for recorded days, neutral for empty. Under this, a clean two-column record list with two rows "9월 30일 · 오늘" amount "₩ 3,750" and "9월 29일" amount "₩ 6,200". Mobile records use the same hierarchy below the timer, only a compact monthly summary and the two rows, no overflowing miniature desktop grid.
+Keep all data and labels legible, accurate Hangul. Desktop interface and mobile interface fully visible with no clipping. Do not add pricing, reviews, fake testimonial, additional feature cards or irrelevant navigation. Overall feeling: witty but restrained, looks like a real lovable simple product designed by a talented Korean product designer. This is a design proposal with illustrative sample records; small board caption outside interfaces at bottom "월급루팡 · 디자인 시안 · 예시 데이터".
+
+## 최종 수정 프롬프트
+
+Edit the supplied 월급루팡 desktop/mobile UI design board. Keep its excellent layout, typography, green/ivory/black palette, mascot, all existing sample monetary numbers, and all other UI unchanged. Add the user-selected coffee milestone feature in BOTH desktop and mobile primary timer panels. Place a small clean cup icon and text "오늘 커피 한 잔까지 250원" below the elapsed-time/earning-rate row, above the wage input on mobile. On desktop place it below the elapsed-time row within the left timer half. Use restrained dark-green text, 14px equivalent, no new card and no large progress bar. Today total shown in records is ₩3,750 so 250 remaining is mathematically correct for a daily coffee goal of ₩4,000. Do not change current session ₩1,250.00, wage 15,000, duration 00:05:00, daily total ₩3,750 or monthly ₩42,850. Increase timer panel height slightly if needed to fit comfortably, keep the monthly records visible. Keep main action "일 시작". Replace the slogan/subtitle under the main heading on both screens with the more natural short text "쉬는 시간도 차곡차곡." Everything must be legible Korean with no clipping. Flat front-facing polished responsive UI mockup, no device perspective. Keep board footer stating design sample data.
+
