@@ -312,8 +312,8 @@ export default function App() {
   const m = month(days, ym)
   const sel = selDay?.startsWith(ym) ? selDay : today.startsWith(ym) ? today : m.list[0]?.day ?? null
   const selStat = sel ? days.get(sel) : undefined
-  // 회차 목록은 최신순 10개씩. 날짜를 바꾸면 첫 페이지로.
-  const PER = 10
+  // 회차 목록은 최신순 5개씩. 날짜를 바꾸면 첫 페이지로.
+  const PER = 5
   const selItems = selStat ? [...selStat.items].sort((a, b) => b.session.startedAt - a.session.startedAt) : []
   const pages = Math.max(1, Math.ceil(selItems.length / PER))
   const page = Math.min(pg.day === sel ? pg.n : 0, pages - 1)
