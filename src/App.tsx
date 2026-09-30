@@ -45,6 +45,7 @@ export default function App() {
   const [said, setSaid] = useState('')
   const [openReward, setOpenReward] = useState<string | null>(null)
   const [selDay, setSelDay] = useState<string | null>(null)
+  const [pg, setPg] = useState({ day: '', n: 0 })
   const dataRef = useRef(data)
   dataRef.current = data
   const queue = useRef<Celebration[]>([])
@@ -72,6 +73,16 @@ export default function App() {
     setData(next)
     return next
   }
+
+  // 수집함 밖을 누르면 선택 강조와 달성 기록을 닫는다
+  useEffect(() => {
+    if (!openReward) return
+    const close = (e: PointerEvent) => {
+      if (!(e.target as Element).closest?.('.collection')) setOpenReward(null)
+    }
+    document.addEventListener('pointerdown', close)
+    return () => document.removeEventListener('pointerdown', close)
+  }, [openReward])
 
   // 1초 타이머 + 탭 복귀 + 다른 탭 동기화
   useEffect(() => {
@@ -301,6 +312,12 @@ export default function App() {
   const m = month(days, ym)
   const sel = selDay?.startsWith(ym) ? selDay : today.startsWith(ym) ? today : m.list[0]?.day ?? null
   const selStat = sel ? days.get(sel) : undefined
+  // 회차 목록은 최신순 10개씩. 날짜를 바꾸면 첫 페이지로.
+  const PER = 10
+  const selItems = selStat ? [...selStat.items].sort((a, b) => b.session.startedAt - a.session.startedAt) : []
+  const pages = Math.max(1, Math.ceil(selItems.length / PER))
+  const page = Math.min(pg.day === sel ? pg.n : 0, pages - 1)
+  const goPage = (n: number) => setPg({ day: sel ?? '', n })
   const [y, mo] = ym.split('-').map(Number)
   const monthLabel = ym.slice(0, 4) === today.slice(0, 4) ? `${mo}월` : `${y}년 ${mo}월`
   const lastUnlocked = rewards.unlocked.at(-1)
@@ -572,8 +589,9 @@ export default function App() {
               )}
             </p>
             {selStat ? (
+              <>
               <ul className="sessions">
-                {selStat.items.map((it) => (
+                {selItems.slice(page * PER, page * PER + PER).map((it) => (
                   <li key={it.session.id}>
                     <span>
                       {kstTime(it.session.startedAt)}–{it.active ? '진행 중' : kstTime(it.session.endedAt)}
@@ -588,6 +606,16 @@ export default function App() {
                   </li>
                 ))}
               </ul>
+              {pages > 1 && (
+                <nav className="pager" aria-label="회차 목록 페이지">
+                  <button onClick={() => goPage(page - 1)} disabled={page === 0} aria-label="이전 페이지">‹</button>
+                  <span>
+                    {page + 1} / {pages}
+                  </span>
+                  <button onClick={() => goPage(page + 1)} disabled={page === pages - 1} aria-label="다음 페이지">›</button>
+                </nav>
+              )}
+              </>
             ) : (
               <p className="empty-msg">{m.list.length ? '이 날은 기록이 없어요.' : '아직 기록이 없어요. 첫 루팡을 시작해 보세요.'}</p>
             )}

@@ -134,7 +134,9 @@ a { color: inherit; }
 
 .shelf { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .slot { display: grid; justify-items: center; gap: 5px; padding: 12px 4px 10px; border: 1px solid transparent; border-radius: 12px; background: transparent; min-width: 0; min-height: 118px; transition: background .2s, border-color .2s; }
-.slot:hover, .slot.open { background: #f7f9f3; border-color: var(--line); }
+.slot.open { background: #f7f9f3; border-color: var(--line); }
+/* 터치 기기에서는 탭한 뒤 hover가 남아 강조가 안 사라지므로 마우스일 때만 */
+@media (hover: hover) { .slot:hover { background: #f7f9f3; border-color: var(--line); } }
 .slot .pile { display: flex; justify-content: center; align-items: flex-end; min-height: 74px; width: 100%; position: relative; }
 .slot .pile .art { margin: 0 -19px; position: relative; z-index: 1; }
 .slot .pile .art:nth-child(2n) { transform: translateY(-5px) rotate(-7deg); }
@@ -196,6 +198,9 @@ a { color: inherit; }
 .sessions .muted { grid-column: 1; grid-row: 2; font-size: 12px; }
 .sessions b { font-variant-numeric: tabular-nums; }
 .del { grid-row: span 2; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); padding: 6px 10px; min-height: 36px; font-size: 13px; }
+.pager { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 12px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.pager button { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; background: var(--panel); font-size: 20px; line-height: 1; }
+.pager button:disabled { opacity: .35; cursor: default; }
 .empty-msg { text-align: center; color: var(--muted); padding: 20px 0; margin: 0; }
 
 .foot { margin-top: 24px; font-size: 12px; text-align: center; }
