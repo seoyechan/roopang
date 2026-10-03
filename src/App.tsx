@@ -456,11 +456,12 @@ export default function App() {
 
       <section className="panel collection">
         <h2>
-          루팡 수집함 <small>쉬는 시간이 이만큼 쌓였어요</small>
+          루팡 수집함 <small>오늘 모은 보상 · 자정에 초기화</small>
         </h2>
         <div className="shelf">
           {DAILY.map((r) => {
-            const n = rewards.dailyDates[r.id].length
+            // 오늘 받은 보상만 센다(종류별 하루 1개). 지난 날짜는 눌러서 '달성 기록'으로 본다
+            const n = rewards.dailyDates[r.id].includes(today) ? 1 : 0
             return (
               <button
                 key={r.id}
