@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Art, Logo, Mascot } from './art.tsx'
 import MoneyCounter from './MoneyCounter.tsx'
+import AdFit from './AdFit.tsx'
 import { track } from './ga.ts'
 import {
   KEY, MAX_WAGE, DAILY, REWARDS, empty, parse, summarize, month, shiftMonth, rewardState, nextDaily, groupNew,
@@ -548,6 +549,8 @@ export default function App() {
         </details>
       </section>
 
+      <AdFit />
+
       <section className="panel records" id="records">
         <div className="rec-head">
           <button onClick={() => setYm(shiftMonth(ym, -1))} aria-label="이전 달">‹</button>
@@ -627,6 +630,8 @@ export default function App() {
         금액은 입력한 시급으로 계산한 재미용 환산값이에요. 세금이나 실제 급여와는 달라요.
         <br />
         기록은 이 브라우저에만 저장되고 다른 기기와 동기화되지 않아요.
+        <br />
+        <a href="privacy.html">개인정보처리방침</a>
         <br />
         <button className="wipe" onClick={wipeAll}>
           이 브라우저의 기록 전체 삭제

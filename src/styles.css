@@ -203,6 +203,10 @@ a { color: inherit; }
 .pager button:disabled { opacity: .35; cursor: default; }
 .empty-msg { text-align: center; color: var(--muted); padding: 20px 0; margin: 0; }
 
+/* 광고 자리는 미리 높이를 잡아 로딩 중 화면이 밀리지 않게 */
+.ad { display: flex; justify-content: center; margin-top: 12px; overflow: hidden; }
+.ad-mobile { min-height: 100px; }
+.ad-pc { min-height: 90px; }
 .foot { margin-top: 24px; font-size: 12px; text-align: center; }
 .wipe { margin-top: 12px; min-height: 40px; padding: 8px 16px; border: 1px solid var(--warn); border-radius: 12px; background: var(--panel); color: var(--warn); font-size: 13px; font-weight: 700; }
 

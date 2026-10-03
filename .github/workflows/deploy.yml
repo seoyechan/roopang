@@ -32,6 +32,8 @@ jobs:
         env:
           # 저장소 Settings → Secrets and variables → Actions → Variables 에 VITE_GA_ID 등록
           VITE_GA_ID: ${{ vars.VITE_GA_ID }}
+          VITE_ADFIT_PC: ${{ vars.VITE_ADFIT_PC }}
+          VITE_ADFIT_MOBILE: ${{ vars.VITE_ADFIT_MOBILE }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
