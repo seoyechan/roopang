@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="월급루팡 소개와 사용법, 시급 계산 방식, 보상 목록, 자주 묻는 질문." />
+    <meta name="theme-color" content="#fbfaf4" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='17' r='13' fill='%23fff' stroke='%23111' stroke-width='3'/><path d='M4 14h24v6c-4 2-8 1-12-1-4 2-8 3-12 1z' fill='%23111'/></svg>" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="pages.css" />
+    <title>소개 · 사용법 · 월급루팡</title>
+  </head>
+  <body>
+    <div class="page">
+      <header class="top">
+        <a class="brand" href="./">
+          <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><circle cx="16" cy="17" r="12" fill="#fff" stroke="#181b17" stroke-width="3"/><path d="M4 13h24v6c-4 2-8 1-12-1-4 2-8 3-12 1z" fill="#181b17"/><circle cx="11" cy="16" r="1.6" fill="#fff"/><circle cx="21" cy="16" r="1.6" fill="#fff"/></svg>
+          월급루팡
+        </a>
+        <nav>
+          <a href="about.html" aria-current="page">소개</a>
+          <a href="privacy.html">개인정보처리방침</a>
+          <a class="btn" href="./">타이머 열기</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div>
+            <p class="eyebrow">월급루팡 소개</p>
+            <h1>잠깐 쉬어도,<br />월급은 흐르니까.</h1>
+            <p>쉬는 동안 내 시급으로 얼마가 흘러갔는지 실시간으로 보여주는 월급 타이머예요.</p>
+            <div class="chips"><span class="chip">로그인 없음</span><span class="chip">무료</span><span class="chip">기록은 내 브라우저에만</span></div>
+          </div>
+          <img src="art/lupin-resting.png" alt="안대를 쓰고 쉬고 있는 괴도 캐릭터" width="1536" height="1024" />
+        </section>
+
+        <section class="panel">
+          <h2>어떤 서비스인가요?</h2>
+          <p>커피 한 잔, 화장실 다녀오기, 잠깐의 스트레칭처럼 일하지 않는 짧은 시간도 사실은 월급에 포함되어 있어요. 월급루팡은 그 시간을 돈으로 바꿔서 보여주고, 하루 동안 모은 금액만큼 커피·짜장면·치킨 같은 보상을 수집함에 쌓아 줘요.</p>
+          <p>회원가입이나 로그인이 필요 없고, 입력한 시급과 기록은 지금 쓰는 브라우저에만 저장돼요.</p>
+        </section>
+
+        <section class="panel">
+          <h2>사용법</h2>
+          <ol class="steps">
+            <li><b>시급 입력</b><span>내 시급을 원 단위로 입력해요. 같은 브라우저에서는 다음 방문에도 그대로 남아 있어요.</span></li>
+            <li><b>루팡 시작</b><span>쉬기 시작할 때 누르면 금액과 경과 시간이 1초마다 올라가요.</span></li>
+            <li><b>일 시작</b><span>다시 일할 때 누르면 이번 회차가 끝나고 오늘 기록에 더해져요.</span></li>
+            <li><b>기록 확인</b><span>달력에서 날짜별로 쉰 시간과 금액, 월별 합계를 볼 수 있어요.</span></li>
+          </ol>
+        </section>
+
+        <section class="panel">
+          <h2>금액 계산 방식</h2>
+          <div class="formula">시급 ÷ 3,600 × 쉰 시간(초)<small>1초 단위로 계산해서 화면에 바로 보여줘요</small></div>
+          <p>2026년 최저시급 10,320원이라면 1초에 약 2.87원씩 쌓여요.</p>
+          <div class="examples">
+            <div><strong>1,720원</strong>10분</div>
+            <div><strong>5,160원</strong>30분 · 커피 달성</div>
+            <div><strong>10,320원</strong>1시간 · 짜장면 달성</div>
+          </div>
+          <p class="note">재미를 위한 환산값이에요. 세금, 4대 보험, 주휴수당 등은 반영하지 않아서 실제 급여와는 달라요.</p>
+        </section>
+
+        <section class="panel">
+          <h2>오늘의 보상</h2>
+          <p>하루 동안 모은 금액이 기준을 넘을 때마다 보상이 수집함에 들어가요. 매일 자정(한국 시간)에 새로 시작해요.</p>
+          <ul class="daily">
+            <li><span class="sprite" style="background-position: 0 0" role="img" aria-label="커피"></span><b>커피</b><small>5,000원</small></li>
+            <li><span class="sprite" style="background-position: 100% 0" role="img" aria-label="짜장면"></span><b>짜장면</b><small>10,000원</small></li>
+            <li><span class="sprite" style="background-position: 0 100%" role="img" aria-label="치킨"></span><b>치킨</b><small>20,000원</small></li>
+            <li><span class="sprite" style="background-position: 100% 100%" role="img" aria-label="외식"></span><b>외식</b><small>50,000원</small></li>
+          </ul>
+
+          <h3>누적 목표</h3>
+          <p>지금까지 모은 전체 금액으로 달성해요. 한 번 달성하면 컬렉션에 계속 남아요.</p>
+          <ul class="goals">
+            <li><b>쇼핑백</b><span>100,000원</span></li>
+            <li><b>운동화</b><span>200,000원</span></li>
+            <li><b>헤드폰</b><span>500,000원</span></li>
+            <li><b>여행 가방</b><span>1,000,000원</span></li>
+            <li><b>노트북</b><span>3,000,000원</span></li>
+            <li><b>자동차 열쇠</b><span>10,000,000원</span></li>
+            <li><b>자동차</b><span>30,000,000원</span></li>
+          </ul>
+        </section>
+
+        <section class="panel faq">
+          <h2>자주 묻는 질문</h2>
+          <details open>
+            <summary>회원가입이 필요한가요?</summary>
+            <p>아니요. 접속해서 시급만 입력하면 바로 쓸 수 있어요.</p>
+          </details>
+          <details>
+            <summary>기록은 어디에 저장되나요?</summary>
+            <p>지금 사용하는 브라우저의 로컬 저장소에만 저장되고 서버로 보내지 않아요. 그래서 다른 기기나 다른 브라우저에서는 기록이 보이지 않아요.</p>
+          </details>
+          <details>
+            <summary>브라우저를 닫으면 진행 중인 루팡은 어떻게 되나요?</summary>
+            <p>시작 시각이 저장되어 있어서 다시 열면 그동안 흐른 시간까지 이어서 계산돼요.</p>
+          </details>
+          <details>
+            <summary>자정을 넘겨서 쉬면 어느 날짜로 기록되나요?</summary>
+            <p>한국 시간 자정을 기준으로 나눠서 각 날짜에 따로 기록돼요.</p>
+          </details>
+          <details>
+            <summary>루팡 중에 시급을 바꿀 수 있나요?</summary>
+            <p>측정 중에는 시급이 잠겨요. 종료한 뒤 바꾸면 다음 회차부터 새 시급이 적용돼요.</p>
+          </details>
+          <details>
+            <summary>월급이나 연봉만 알고 있어요.</summary>
+            <p>월급을 한 달 근무시간(주 40시간 기준 약 209시간)으로 나누면 대략적인 시급이 돼요. 예를 들어 월급 300만 원이면 시급은 약 14,354원이에요.</p>
+          </details>
+          <details>
+            <summary>기록을 지우고 싶어요.</summary>
+            <p>메인 화면 맨 아래의 "이 브라우저의 기록 전체 삭제" 버튼을 누르거나 브라우저의 사이트 데이터를 삭제하면 돼요.</p>
+          </details>
+        </section>
+
+        <section class="panel cta-panel">
+          <div>
+            <h2>의견이나 오류 제보</h2>
+            <p><a href="https://github.com/seoyechan/roopang/issues" target="_blank" rel="noopener">GitHub 이슈</a>로 남겨 주세요.</p>
+          </div>
+          <a class="btn" href="./">지금 루팡 시작하기</a>
+        </section>
+      </main>
+
+      <footer class="foot">
+        <nav><a href="./">월급루팡</a><a href="about.html">소개 · 사용법</a><a href="privacy.html">개인정보처리방침</a></nav>
+        금액은 재미용 환산값이며 실제 급여와 다릅니다.
+      </footer>
+    </div>
+  </body>
+</html>

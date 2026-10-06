@@ -632,7 +632,7 @@ export default function App() {
         <br />
         기록은 이 브라우저에만 저장되고 다른 기기와 동기화되지 않아요.
         <br />
-        <a href="privacy.html">개인정보처리방침</a>
+        <a href="about.html">소개 · 사용법</a> · <a href="privacy.html">개인정보처리방침</a>
         <br />
         <button className="wipe" onClick={wipeAll}>
           이 브라우저의 기록 전체 삭제
