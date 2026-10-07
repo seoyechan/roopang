@@ -5,7 +5,7 @@ import AdFit from './AdFit.tsx'
 import { track } from './ga.ts'
 import {
   KEY, MAX_WAGE, DAILY, REWARDS, empty, parse, summarize, month, shiftMonth, rewardState, nextDaily, groupNew,
-  validWage, earned, dayKey, kstTime, won, dur, clock,
+  validWage, earned, dayKey, kstTime, won, dur, clock, mergeBase, pickCelebrations, trailIndexes, paginate, calendar, compact,
   type Data, type Session, type Celebration,
 } from './logic.ts'
 
@@ -40,7 +40,7 @@ export default function App() {
   const [saveFailed, setSaveFailed] = useState(!!initial.storageFailed)
   const [notice, setNotice] = useState(initial.notice ?? '')
   const [result, setResult] = useState<{ amount: number; ms: number } | null>(null)
-  const [ym, setYm] = useState(dayKey(Date.now()).slice(0, 7))
+  const [pickedYm, setYm] = useState<string | null>(null) // null이면 이번 달
   const [celeb, setCeleb] = useState<(Celebration & { extra?: string }) | null>(null)
   const [stash, setStash] = useState('')
   const [said, setSaid] = useState('')
@@ -48,6 +48,7 @@ export default function App() {
   const [selDay, setSelDay] = useState<string | null>(null)
   const [pg, setPg] = useState({ day: '', n: 0 })
   const dataRef = useRef(data)
+  const writeFailed = useRef(!!initial.storageFailed)
   dataRef.current = data
   const queue = useRef<Celebration[]>([])
   const resumed = useRef(true) // 첫 로드·백그라운드 복귀 시 대표 연출 1개만
@@ -57,16 +58,19 @@ export default function App() {
 
   /** 다른 탭의 변경을 먼저 읽고 적용한 뒤 저장한다. */
   function commit(fn: (d: Data) => Data) {
-    let fresh = dataRef.current
+    let stored: string | null | undefined
     try {
-      fresh = parse(localStorage.getItem(KEY)) ?? fresh
+      stored = localStorage.getItem(KEY)
     } catch {}
+    const fresh = mergeBase(stored, dataRef.current, writeFailed.current)
     const next = fn(fresh)
-    if (next !== fresh || fresh !== dataRef.current) {
+    if (next !== fresh || fresh !== dataRef.current || writeFailed.current) {
       try {
         localStorage.setItem(KEY, JSON.stringify(next))
+        writeFailed.current = false
         setSaveFailed(false)
       } catch {
+        writeFailed.current = true
         setSaveFailed(true)
       }
     }
@@ -148,10 +152,10 @@ export default function App() {
     if (!groups.length) return
     groups.forEach((g) => track('reward', { reward: g.reward.id, daily: g.daily, lifetime: g.lifetime }))
     // 여러 개면 가장 큰 보상부터 최대 limit개, 나머지는 묶어서 안내
-    const shown = groups.slice(-limit)
+    const { shown, summary } = pickCelebrations(groups, limit)
     queue.current.push(...shown)
     setSaid(groups.map((g) => g.reward.msg).join(' '))
-    if (groups.length > shown.length) setStash(`보상 ${groups.length}개를 모았어요`)
+    if (summary) setStash(summary)
     if (!celeb) setCeleb(queue.current.shift()!)
   })
 
@@ -238,12 +242,16 @@ export default function App() {
       return
     }
     setError('')
-    commit((d) =>
-      d.activeSession ? d : { ...d, hourlyWage: wage, activeSession: { id: newId(), hourlyWage: wage, startedAt: Date.now() } },
-    )
+    let started = false
+    commit((d) => {
+      if (d.activeSession) return d
+      started = true
+      return { ...d, hourlyWage: wage, activeSession: { id: newId(), hourlyWage: wage, startedAt: Date.now() } }
+    })
     setResult(null)
     setNotice('')
     setNow(Date.now())
+    if (!started) return setSaid('다른 창에서 이미 루팡 중이에요.')
     setSaid('루팡 시작! 금액이 쌓이기 시작해요.')
     track('lupang_start', { hourly_wage: wage })
   }
@@ -298,6 +306,7 @@ export default function App() {
     setStash('')
     setOpenReward(null)
     setSelDay(null)
+    setYm(null)
     setNotice('모든 기록을 지웠어요.')
     setSaid('모든 기록을 지웠어요.')
     track('wipe_all')
@@ -310,20 +319,19 @@ export default function App() {
     if (data.hourlyWage !== wage) commit((d) => ({ ...d, hourlyWage: wage }))
   }
 
+  const ym = pickedYm ?? today.slice(0, 7)
   const m = month(days, ym)
   const sel = selDay?.startsWith(ym) ? selDay : today.startsWith(ym) ? today : m.list[0]?.day ?? null
   const selStat = sel ? days.get(sel) : undefined
   // 회차 목록은 최신순 5개씩. 날짜를 바꾸면 첫 페이지로.
   const PER = 5
   const selItems = selStat ? [...selStat.items].sort((a, b) => b.session.startedAt - a.session.startedAt) : []
-  const pages = Math.max(1, Math.ceil(selItems.length / PER))
-  const page = Math.min(pg.day === sel ? pg.n : 0, pages - 1)
+  const { page, pages, items: pageItems } = paginate(selItems, pg.day === sel ? pg.n : 0, PER)
   const goPage = (n: number) => setPg({ day: sel ?? '', n })
   const [y, mo] = ym.split('-').map(Number)
   const monthLabel = ym.slice(0, 4) === today.slice(0, 4) ? `${mo}월` : `${y}년 ${mo}월`
   const lastUnlocked = rewards.unlocked.at(-1)
-  const nextIdx = rewards.next ? REWARDS.indexOf(rewards.next) : REWARDS.length
-  const trail = [...new Set([Math.max(0, nextIdx - 1), nextIdx, nextIdx + 1, REWARDS.length - 1])].filter((i) => i < REWARDS.length)
+  const trail = trailIndexes(rewards.next)
   const mode = running ? 'running' : result ? 'done' : 'idle'
 
   let status = '시급을 알려주세요'
@@ -595,7 +603,7 @@ export default function App() {
             {selStat ? (
               <>
               <ul className="sessions">
-                {selItems.slice(page * PER, page * PER + PER).map((it) => (
+                {pageItems.map((it) => (
                   <li key={it.session.id}>
                     <span>
                       {kstTime(it.session.startedAt)}–{it.active ? '진행 중' : kstTime(it.session.endedAt)}
@@ -644,17 +652,6 @@ export default function App() {
 
 const unitText = (u?: string) => (u === '잔' ? '한 잔' : u === '그릇' ? '한 그릇' : u === '마리' ? '한 마리' : '한 번')
 const short = (n: number) => (n >= 10_000 ? `${(n / 10_000).toLocaleString()}만` : `${n / 1000}천`)
-
-/** 달력 칸: 앞쪽 빈칸(null) + 'YYYY-MM-DD' */
-function calendar(ym: string) {
-  const [y, m] = ym.split('-').map(Number)
-  const lead = new Date(Date.UTC(y, m - 1, 1)).getUTCDay()
-  const n = new Date(Date.UTC(y, m, 0)).getUTCDate()
-  return [...Array(lead).fill(null), ...Array.from({ length: n }, (_, i) => `${ym}-${String(i + 1).padStart(2, '0')}`)]
-}
-// 달력 칸용 짧은 금액: 9,999 / 1.5만 / 668만 / 1.2억
-const compact = (n: number) =>
-  n < 10_000 ? won(n) : n < 1_000_000 ? `${+(n / 10_000).toFixed(1)}만` : n < 100_000_000 ? `${Math.floor(n / 10_000)}만` : `${+(n / 100_000_000).toFixed(1)}억`
 
 function dayLabel(d: string, today: string) {
   const [, m, day] = d.split('-').map(Number)

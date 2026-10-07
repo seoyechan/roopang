@@ -1,4 +1,5 @@
 import { memo, useLayoutEffect, useRef } from 'react'
+import { moneyParts } from './logic.ts'
 
 /** Keep each place mounted: only the digits that change roll, never the whole amount. */
 const RollingDigit = memo(function RollingDigit({ value }: { value: string }) {
@@ -32,10 +33,7 @@ const RollingDigit = memo(function RollingDigit({ value }: { value: string }) {
 })
 
 export default function MoneyCounter({ amount }: { amount: number }) {
-  // Derive both parts from one value so a decimal carry never disagrees with the integer.
-  const fixed = (Math.floor(Math.max(0, amount) * 100) / 100).toFixed(2)
-  const [whole, fraction] = fixed.split('.')
-  const formatted = Number(whole).toLocaleString('ko-KR')
+  const { whole: formatted, fraction } = moneyParts(amount)
 
   return <p className={`amount len-${Math.min(formatted.length, 13)}`} aria-label={`${formatted}.${fraction}원`}>
     <span className="money-visual" aria-hidden>

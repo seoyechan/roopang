@@ -35,7 +35,8 @@ export const earned = (wage: number, ms: number) => (wage * ms) / H
 export const validWage = (w: number) => Number.isInteger(w) && w >= MIN_WAGE && w <= MAX_WAGE
 
 const num = (v: unknown) => typeof v === 'number' && Number.isFinite(v)
-const isActive = (s: any) => s && typeof s.id === 'string' && num(s.hourlyWage) && num(s.startedAt)
+const pos = (v: unknown) => num(v) && (v as number) > 0
+const isActive = (s: any) => s && typeof s.id === 'string' && pos(s.hourlyWage) && num(s.startedAt)
 
 /** null이면 형식이 잘못된 데이터. 저장값이 없으면 빈 데이터. */
 export function parse(raw: string | null): Data | null {
@@ -44,17 +45,27 @@ export function parse(raw: string | null): Data | null {
     const d = JSON.parse(raw)
     if (
       d?.version !== 1 ||
-      !(d.hourlyWage === null || num(d.hourlyWage)) ||
+      !(d.hourlyWage === null || pos(d.hourlyWage)) ||
       !(d.activeSession === null || isActive(d.activeSession)) ||
       !Array.isArray(d.sessions) ||
       !d.sessions.every((s: any) => isActive(s) && num(s.endedAt)) ||
-      !Array.isArray(d.celebratedRewardKeys)
+      !Array.isArray(d.celebratedRewardKeys) ||
+      !d.celebratedRewardKeys.every((k: unknown) => typeof k === 'string')
     )
       return null
     return d
   } catch {
     return null
   }
+}
+
+/**
+ * 저장 직전에 다른 탭의 변경을 반영할 기준 데이터.
+ * 저장이 실패 중이거나 읽기에 실패하면(undefined) 저장소가 낡았으므로 화면 데이터를 기준으로 한다.
+ */
+export function mergeBase(stored: string | null | undefined, current: Data, writeFailed: boolean): Data {
+  if (writeFailed || stored === undefined) return current
+  return parse(stored) ?? current
 }
 
 /** 한국 시간 자정 경계로 회차를 나눈다. */
@@ -119,7 +130,6 @@ export const REWARDS: Reward[] = [
   { id: 'car', name: '자동차', amount: 30_000_000, msg: '드디어 내 차 한 대!' },
 ]
 export const DAILY = REWARDS.filter((r) => r.unit)
-export const byId = (id: string) => REWARDS.find((r) => r.id === id)!
 
 export function rewardState(days: Map<string, DayStat>, total: number) {
   const list = [...days.values()]
@@ -145,7 +155,9 @@ export function groupNew(keys: string[]): Celebration[] {
   const m = new Map<string, Celebration>()
   for (const k of keys) {
     const id = k.split(':').pop()!
-    const c = m.get(id) ?? { reward: byId(id), daily: false, lifetime: false }
+    const reward = REWARDS.find((r) => r.id === id)
+    if (!reward) continue // 보상표가 바뀌기 전 키
+    const c = m.get(id) ?? { reward, daily: false, lifetime: false }
     if (k.startsWith('daily:')) c.daily = true
     else c.lifetime = true
     m.set(id, c)
@@ -167,4 +179,40 @@ export function clock(ms: number) {
   const s = Math.floor(Math.max(0, ms) / 1000)
   const p = (n: number) => String(n).padStart(2, '0')
   return `${p(Math.floor(s / 3600))}:${p(Math.floor((s % 3600) / 60))}:${p(s % 60)}`
+}
+
+/** 여러 보상을 한 번에 받으면 큰 것부터 limit개만 연출하고 나머지는 한 줄로 묶는다. */
+export function pickCelebrations(groups: Celebration[], limit: number) {
+  const shown = groups.slice(-Math.max(1, limit))
+  return { shown, summary: groups.length > shown.length ? `보상 ${groups.length}개를 모았어요` : '' }
+}
+
+/** 누적 목표 미리보기: 직전 달성, 다음, 그다음, 최종(자동차) 위치 */
+export function trailIndexes(next: Reward | null) {
+  const i = next ? REWARDS.indexOf(next) : REWARDS.length
+  return [...new Set([Math.max(0, i - 1), i, i + 1, REWARDS.length - 1])].filter((x) => x < REWARDS.length)
+}
+
+export function paginate<T>(items: T[], page: number, per: number) {
+  const pages = Math.max(1, Math.ceil(items.length / per))
+  const p = Math.min(Math.max(0, page), pages - 1)
+  return { page: p, pages, items: items.slice(p * per, p * per + per) }
+}
+
+/** 달력 칸: 앞쪽 빈칸(null, 일요일 시작) + 'YYYY-MM-DD' */
+export function calendar(ym: string) {
+  const [y, m] = ym.split('-').map(Number)
+  const lead = new Date(Date.UTC(y, m - 1, 1)).getUTCDay()
+  const n = new Date(Date.UTC(y, m, 0)).getUTCDate()
+  return [...Array(lead).fill(null), ...Array.from({ length: n }, (_, i) => `${ym}-${String(i + 1).padStart(2, '0')}`)] as (string | null)[]
+}
+
+/** 달력 칸용 짧은 금액: 9,999 / 1.5만 / 668만 / 1.2억 */
+export const compact = (n: number) =>
+  n < 10_000 ? won(n) : n < 1_000_000 ? `${+(n / 10_000).toFixed(1)}만` : n < 100_000_000 ? `${Math.floor(n / 10_000)}만` : `${+(n / 100_000_000).toFixed(1)}억`
+
+/** 큰 금액 표시용: 소수 둘째 자리까지 내림. 0.29×100 = 28.999… 같은 부동소수 오차를 먼저 보정한다. */
+export function moneyParts(amount: number) {
+  const cents = Math.floor(Number((Math.max(0, amount) * 100).toFixed(6)))
+  return { whole: won(Math.floor(cents / 100)), fraction: String(cents % 100).padStart(2, '0') }
 }
