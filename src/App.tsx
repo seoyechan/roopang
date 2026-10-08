@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Art, Logo, Mascot } from './art.tsx'
 import MoneyCounter from './MoneyCounter.tsx'
-import AdFit from './AdFit.tsx'
 import { track } from './ga.ts'
 import {
   KEY, MAX_WAGE, DAILY, REWARDS, empty, parse, summarize, month, shiftMonth, rewardState, nextDaily, groupNew,
@@ -557,8 +556,6 @@ export default function App() {
           </ol>
         </details>
       </section>
-
-      <AdFit />
 
       <section className="panel records" id="records">
         <div className="rec-head">
