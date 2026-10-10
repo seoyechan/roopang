@@ -1,0 +1,17 @@
+{
+  "id": "/",
+  "name": "월급루팡 · 쉬는 시간도 월급이 흐르는 타이머",
+  "short_name": "월급루팡",
+  "description": "잠깐 쉬어도, 월급은 흐르니까. 로그인 없는 월급 타이머.",
+  "lang": "ko",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fcfcf8",
+  "theme_color": "#fbfaf4",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
