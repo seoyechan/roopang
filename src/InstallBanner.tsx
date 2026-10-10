@@ -9,6 +9,7 @@ type InstallEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{
 const HIDE = 'roopang-install-hidden'
 const standalone = matchMedia('(display-mode: standalone)').matches || (navigator as { standalone?: boolean }).standalone === true
 const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+const android = /Android/i.test(navigator.userAgent)
 
 function hiddenToday() {
   try {
@@ -36,7 +37,7 @@ export default function InstallBanner() {
     return () => { listeners.delete(f) }
   }, [])
 
-  if (closed || hiddenToday() || (!deferred && !ios)) return null
+  if (closed || hiddenToday() || !(ios || (android && deferred))) return null  // 컴퓨터에선 안 띄움
 
   function close() {
     hide(dayKey(Date.now()))
