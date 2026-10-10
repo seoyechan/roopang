@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Art, Logo, Mascot } from './art.tsx'
 import MoneyCounter from './MoneyCounter.tsx'
+import InstallBanner from './InstallBanner.tsx'
 import { track } from './ga.ts'
 import {
   KEY, MAX_WAGE, DAILY, REWARDS, empty, parse, summarize, month, shiftMonth, rewardState, nextDaily, groupNew,
@@ -340,6 +341,7 @@ export default function App() {
 
   return (
     <div className="page">
+      <InstallBanner />
       <header className="top">
         <a className="brand" href="#">
           <Logo /> 월급루팡
