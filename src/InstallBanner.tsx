@@ -54,7 +54,7 @@ export default function InstallBanner() {
   }
 
   return (
-    <div className="install" role="region" aria-label="앱 설치 안내">
+    <div className={deferred ? 'install android' : 'install'} role="region" aria-label="앱 설치 안내">
       <img src="/icons/icon-192.png" alt="" width={44} height={44} />
       <div className="install-text">
         <b>월급루팡 앱으로 쓰기</b>
@@ -67,8 +67,8 @@ export default function InstallBanner() {
         )}
       </div>
       <div className="install-actions">
-        {deferred && <button className="install-go" onClick={install}>앱 설치</button>}
         <button className="install-web" onClick={close}>{deferred ? '웹으로 볼게요' : '닫기'}</button>
+        {deferred && <button className="install-go" onClick={install}>앱 설치</button>}
       </div>
     </div>
   )
